@@ -61,8 +61,11 @@ class MainActivity : ComponentActivity() {
                         composable("TodoScreen") {
                             TodoScreen(navController = navController, items = lesSo)
                         }
-                        composable("ClickTODO") {
-                            ClickTODO(navController = navController, items = lesSo)
+                        composable<ClickTODO> {
+                            ClickTODOScreen(
+                                navController = navController,
+                                items = lesSo
+                            )
                         }
                     }
                 }
@@ -113,7 +116,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .clickable {
-                            navController.navigate("ClickTODO")
+                            navController.navigate(ClickTODO)
                         },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
