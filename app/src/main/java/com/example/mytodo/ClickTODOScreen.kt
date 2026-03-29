@@ -1,6 +1,7 @@
 package com.example.mytodo
 
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,14 +21,16 @@ import androidx.navigation.NavController
 fun ClickTODOScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    items: MutableList<MainActivity.Less>
+    items: MutableList<MainActivity.Less>,
+    id: Int
 ) {
+    val item = items.find { it.id == id }
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Задача 1",
+                        text = item?.lesSo ?:"", //items-и интхобшудаамон ба текст баробар мешавад
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
@@ -39,10 +42,10 @@ fun ClickTODOScreen(
             modifier = Modifier.fillMaxWidth().padding(paddingValues)
         ){
             Button (onClick = {
-            items.removeIf { it.lesSo == "Задача 1" }
+            items.removeIf { it.id== id }  // тоза кардан бо ёрии id
+                Toast.makeText(navController.context, "${item?.lesSo} тоза шуд", Toast.LENGTH_SHORT).show() //Toast барои хабари тоза кардашуда
                 navController.popBackStack()
             },
-
             ){
              Text("Удалить")
             }

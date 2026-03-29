@@ -34,12 +34,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.mytodo.ui.theme.MyTodoTheme
 
 
@@ -52,21 +54,29 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             MyTodoTheme {
-                val lesSo = remember { mutableStateListOf(Less("Задача 1")) }
+
+                val lesSo = remember { mutableStateListOf(
+                    Less(1,"Задача 134"),
+                    Less(2,"Задача 2"),
+                    Less(3,"Задача 3"),
+                    Less(4,"Задача 4"),
+                ) }
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "TodoScreen",
+                        startDestination = TodoScreen,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable("TodoScreen") {
+                        composable<TodoScreen> {
                             TodoScreen(navController = navController, items = lesSo)
                         }
-                        composable<ClickTODO> {
+                        composable<ClickTODO> {backStackEntry ->
+                            val route = backStackEntry.toRoute<ClickTODO>()
                             ClickTODOScreen(
                                 navController = navController,
-                                items = lesSo
+                                items = lesSo,
+                                id = route.id
                             )
                         }
                     }
@@ -74,15 +84,18 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
     @Composable
-    private fun TodoScreen(modifier: Modifier = Modifier, navController: NavController,items: MutableList<Less>) {
+    fun TodoScreen(modifier: Modifier = Modifier, navController: NavController,items: MutableList<Less>) {
         Scaffold(
             modifier = modifier,
             topBar = {
                 TopAppBar(
                     title = {
-                        Text("TODO")
+                        Text(
+                            text = "TODO",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
                     }
                 )
             },
@@ -104,29 +117,26 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
     @Composable
-    private fun TodoItem(navController: NavController, items: MutableList<Less>,) {
-        var checkboxPush by remember { mutableStateOf(false) }
-
-        val itemsColor = if (checkboxPush) Color.Red else Color.White
-
+    fun TodoItem(navController: NavController, items: MutableList<Less>,) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color(0xFF28324F))
         ) {
             items(items.size) { index ->
+                val id = items[index].id   //items[index] ро ба id  баробар кардам(аниқтараш index-ро ба id), то инки навигатсия донад кадом индексро интихоб кард
+                var checkboxPush by remember { mutableStateOf(false) }
+                val itemsColor = if (checkboxPush) Color.Red else Color.White
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .clickable {
-                            navController.navigate(ClickTODO)
+                            navController.navigate(ClickTODO(id))   //Навигатсия хамрох бо id меравад
                         },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
-
                 ) {
                     Icon(Icons.Default.Delete, contentDescription = null)
                     Text(text = items[index].lesSo, color = itemsColor)
@@ -136,23 +146,12 @@ class MainActivity : ComponentActivity() {
                             checkboxPush = it
                         }
                     )
-
                 }
             }
         }
     }
-
-    @Preview
-    @Composable
-    private fun TodoScreenPreview() = MyTodoTheme {
-        TodoScreen(
-            modifier = Modifier.fillMaxSize(),
-            navController = NavController(MainActivity()),
-            items = remember { mutableStateListOf(Less("Задача 1")) }
-        )
-    }
-
     data class Less(
+        var id: Int,//эълони id
         var lesSo: String,
     )
 }
