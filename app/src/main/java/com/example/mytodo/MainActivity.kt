@@ -35,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -56,10 +55,10 @@ class MainActivity : ComponentActivity() {
             MyTodoTheme {
 
                 val lesSo = remember { mutableStateListOf(
-                    Less(1,"Задача 134"),
-                    Less(2,"Задача 2"),
-                    Less(3,"Задача 3"),
-                    Less(4,"Задача 4"),
+                    Less(1,"Задача 134","Хондани китоб"),
+                    Less(2,"Задача 2","Ҳалли машқҳо"),
+                    Less(3,"Задача 3","Кори мустақилона"),
+                    Less(4,"Задача 4","Такрори дарсҳои кӯҳна"),
                 ) }
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -76,7 +75,8 @@ class MainActivity : ComponentActivity() {
                             ClickTODOScreen(
                                 navController = navController,
                                 items = lesSo,
-                                id = route.id
+                                id = route.id,
+                                textTODO = route.textTODO
                             )
                         }
                     }
@@ -133,7 +133,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .clickable {
-                            navController.navigate(ClickTODO(id))   //Навигатсия хамрох бо id меравад
+                            navController.navigate(ClickTODO(id, textTODO = items[index].textTODO))   //Навигатсия хамрох бо id меравад
                         },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -153,5 +153,6 @@ class MainActivity : ComponentActivity() {
     data class Less(
         var id: Int,//эълони id
         var lesSo: String,
+        var textTODO: String //Эълони тексти TODO
     )
 }

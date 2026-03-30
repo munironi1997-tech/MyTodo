@@ -5,4 +5,5 @@ import kotlinx.serialization.Serializable
 object TodoScreen {
    }
 @Serializable
-data class ClickTODO(val id: Int)     //data class барои дохил кардани қимат ёрдам мекунад
+data class ClickTODO(val id: Int,//data class барои дохил кардани қимат ёрдам мекунад
+                     val textTODO: String)//Эълони тексти TODO
